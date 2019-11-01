@@ -1,0 +1,43 @@
+org: alexandresaker
+app: aws-nest-weboack-test
+service:
+  name: aws-node-typescript-nest
+
+plugins:
+  - serverless-plugin-optimize
+  - serverless-offline
+  - serverless-webpack
+  # - serverless-plugin-warmup
+
+# custom:
+#   # Enable warmup on all functions (only for production and staging)
+#   warmup:
+#       - production
+#       - staging
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js' # Name of webpack configuration file
+    includeModules: true # Node modules configuration for packaging
+    packager: 'npm' # Packager that will be used to package your external modules
+    excludeFiles: src/**/*.test.js # Provide a glob for files to ignore
+
+provider:
+  name: aws
+  region: eu-west-1
+  runtime: nodejs10.x
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+package:
+  individually: true
+
+functions:
+  main:
+    handler: src/main.handler
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
