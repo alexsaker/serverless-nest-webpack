@@ -1,36 +1,43 @@
 org: alexandresaker
-app: aws-nest-weboack-test
+app: test-webpack-nest
 service:
-  name: aws-node-typescript-nest
+  name: hello
 
 plugins:
   - serverless-plugin-optimize
   - serverless-offline
   - serverless-webpack
-  # - serverless-plugin-warmup
+  - serverless-plugin-warmup
 
-# custom:
-#   # Enable warmup on all functions (only for production and staging)
-#   warmup:
-#       - production
-#       - staging
-
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: ${opt:region, self:custom.defaultRegion}
+  stage: ${opt:stage, self:custom.defaultStage}
+  profile: ${self:custom.profiles.${self:provider.stage}}
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+    environment:
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 custom:
+  defaultStage: dev
+  defaultRegion: eu-west-3
+  profiles:
+    dev: serverless-tester
+    prod: serverless-admin
   webpack:
     webpackConfig: 'webpack.config.js' # Name of webpack configuration file
     includeModules: true # Node modules configuration for packaging
     packager: 'npm' # Packager that will be used to package your external modules
-    excludeFiles: src/**/*.test.js # Provide a glob for files to ignore
-
-provider:
-  name: aws
-  region: eu-west-1
-  runtime: nodejs10.x
-  apiGateway:
-    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
-  environment:
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-
+    excludeFiles: src/**/*.spec.ts # Provide a glob for files to ignore
+  # Enable warmup on all functions (only for production and staging)
+  warmup:
+    enabled: true
+    events:
+      - schedule: 'cron(0/5 8-17 ? * MON-FRI *)' # Run WarmUp every 5 minutes Mon-Fri between 8:00am and 5:55pm (UTC)
+    timeout: 20
+    prewarm: true # Run WarmUp immediately after a deploymentlambda
+    concurrency: 1 # Warm up 1 concurrent instances
 package:
   individually: true
 

@@ -1,5 +1,6 @@
-/node_modules/
-/.build/
-/dist/
-/.serverless/
+node_modules/
+.build/
+dist/
+.serverless/
 /_warmup/
+.webpack/

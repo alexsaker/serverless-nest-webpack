@@ -19,6 +19,7 @@
   "dependencies": {
     "@nestjs/common": "^5.4.0",
     "@nestjs/core": "^5.4.0",
+    "aws-sdk": "^2.590.0",
     "aws-serverless-express": "^3.3.5",
     "express": "^4.17.1",
     "reflect-metadata": "^0.1.12",
@@ -39,6 +40,7 @@
     "prettier": "^1.14.2",
     "serverless-offline": "^3.31.3",
     "serverless-plugin-optimize": "^4.0.2-rc.1",
+    "serverless-plugin-warmup": "^4.7.1-rc.1",
     "serverless-webpack": "^5.3.1",
     "supertest": "^3.1.0",
     "ts-jest": "^23.1.3",
